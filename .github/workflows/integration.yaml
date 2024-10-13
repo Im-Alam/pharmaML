@@ -26,8 +26,7 @@ jobs:
         
 
       - name: Get Data from Remote Database
-        run: |
-          python3 getData.py  # Fetch data from the database
+        run: python3 getData.py
         env: 
           DB_USER: ${{secrets.DB_USER}}
           DB_HOST: ${{secrets.DB_HOST}}
@@ -38,7 +37,7 @@ jobs:
 
       - name: Preprocess Data
         run: |
-          python3 PreprocessData.py  # Preprocess the data
+          python3 preprocessData.py  # Preprocess the data
 
       - name: Train the Model
         run: |
