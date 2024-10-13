@@ -39,7 +39,6 @@ def fill_missing_weeks(group):
 # Apply the function to fill missing data for each product_id
 weekly_aggregated_df_full = weekly_aggregated_df_full.groupby('product_id').apply(fill_missing_weeks).reset_index(drop=True)
 
-weekly_aggregated_df_full
 
 with open('Data/weekly_aggregated_df_full.csv', 'w') as file:
     weekly_aggregated_df_full.to_csv(file, index=False)

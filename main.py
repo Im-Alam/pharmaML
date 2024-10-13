@@ -1,7 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import json
-from typing import List, Dict
+from typing import Dict
+from dotenv import load_dotenv
+
+
+load_dotenv(override=True)
+
 
 app = FastAPI()
 

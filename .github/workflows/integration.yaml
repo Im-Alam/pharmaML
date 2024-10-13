@@ -1,0 +1,46 @@
+name: Pharma ML Pipeline
+
+on:
+  schedule:
+    - cron: "0 5 * * *"  # Runs at morning 5 am everyday
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  setup_environment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+
+      - name: Get Data from Remote Database
+        run: |
+          python3 getData.py  # Fetch data from the database
+
+
+      - name: Preprocess Data
+        run: |
+          python3 PreprocessData.py  # Preprocess the data
+
+      - name: Train the Model
+        run: |
+          python3 train.py  # Train the model
+
+
+      - name: Predict Demand
+        run: |
+          python3 demand_predictor.py  # Predict demand
+
+      - name: Calculate Supplier Score
+        run: |
+          python3 supplier_scorer.py  # Calculate supplier score
