@@ -59,6 +59,6 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git add models/ states/ Data/
-          git commit -m "Update by GitHub Actions bot" || echo "No changes to commit"
+          git add models/ state/ Data/
+          git commit -m "Update by GitHub Actions bot on $(date)" || echo "No changes to commit"
           git push origin ${{ github.ref }}
