@@ -54,6 +54,19 @@ def reorderPoint():
 
     final_dict = merged_data.set_index('Product_ID')[['safety_stock', 'rop']].to_dict(orient='index')
 
+    for product_id, values in final_dict.items():
+        for key, value in values.items():
+            if isinstance(value, float) and (np.isnan(value) or np.isinf(value)):
+                values[key] = None  # or a default value like 0
+    
+    for product_id, values in final_dict.items():
+        for key in ['safety_stock', 'rop']:
+            value = values[key]
+            if value is None:  # Handle None values
+                values[key] = None  # Keep it as None or replace with a default value
+            else:
+                values[key] = int(value)  # Convert to integer
+    
     # Convert the dictionary to JSON
-    return json.dumps(final_dict, indent=4)
+    return final_dict
 

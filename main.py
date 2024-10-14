@@ -96,6 +96,9 @@ async def get_product_demand(week: Union[int, None] = Query(None, ge=1, le=19)):
 async def reorder_point():
     return reorderPoint()
 
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return {"message": "Favicon not found. Add a favicon.ico in the static folder."}
 
 
 if __name__ == "__main__":
