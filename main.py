@@ -1,14 +1,22 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 import json
 from typing import Dict
 from dotenv import load_dotenv
-
+from demand_predictor import predict_demand
+from typing import Union
+from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 
 load_dotenv(override=True)
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins= ['*'],
+)
 
 # Load supplier scores from a JSON file
 def load_supplier_scores(file_path: str) -> Dict[str, float]:
@@ -34,24 +42,46 @@ async def get_supplier_score():
 
 # Route to fetch product demand for the current week
 @app.get("/product-demand", response_class=JSONResponse)
-async def get_product_demand():
+async def get_product_demand(week: Union[int, None] = Query(None, ge=1, le=19)):
+    #le value can take max 52 if we have trained on 52 week data. Now we have trained on 18 weeks
     try:
-        with open('state/demand.json', 'r') as file:
-            demand = json.load(file)
-        
-        with open('state/medicine_inventory.json', 'r') as file:
-            prod_names = json.load(file)
+        if week==None:
+            # current_day = datetime.now().isocalender()[1]
 
-        if demand is None:
-            raise HTTPException(status_code=404, detail="Product not found")
-        
-        transformed_data = {}
-        for product_id, demand_value in demand.items():
-            product_name = prod_names.get(product_id, "Unknown Product")
-            transformed_data[product_name] = {"demand": demand_value}
+            # with open('state/update_state.json', 'r') as file:
+            #     last_date = json.load(file)
+            # last_date = datetime.strptime(last_date, "%Y-%m-%d %H:%M:%S")
 
+            # if(datetime.now().date()>last_date.date()):
+            #     return predict_demand(current_day)
+            
+            with open('state/demand.json', 'r') as file:
+                demand = json.load(file)
+            
+            with open('state/medicine_inventory.json', 'r') as file:
+                prod_names = json.load(file)
 
-        return transformed_data
+            if demand is None:
+                raise HTTPException(status_code=404, detail="Product not found")
+            
+            transformed_data = {}
+            for product_id, demand_value in demand.items():
+                product_name = prod_names.get(product_id, "Unknown Product")
+                transformed_data[product_name] = {"demand": demand_value}
+
+            return transformed_data
+        else:
+            demand = predict_demand(week)
+            transformed_data = {}
+            with open('state/medicine_inventory.json', 'r') as file:
+                prod_names = json.load(file)
+                
+            for product_id, demand_value in demand.items():
+                product_name = prod_names.get(product_id, "Unknown Product")
+                transformed_data[product_name] = {"demand": demand_value}
+
+            return transformed_data
+
     
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Demand file not found")
