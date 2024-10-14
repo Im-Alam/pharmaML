@@ -7,6 +7,7 @@ from demand_predictor import predict_demand
 from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+from rop import reorderPoint
 
 load_dotenv(override=True)
 
@@ -88,6 +89,12 @@ async def get_product_demand(week: Union[int, None] = Query(None, ge=1, le=19)):
 
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Error decoding JSON file")
+    
+
+
+@app.get("/roq", response_class=JSONResponse)
+async def reorder_point():
+    return reorderPoint()
 
 
 
