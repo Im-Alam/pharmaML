@@ -4,8 +4,7 @@ on:
   push:
     branches: ['main']
   schedule:
-    - cron: "30 14 * * *"  # Runs at morning 5 am everyday
-  workflow_dispatch:  # Allows manual triggering of the workflow
+    - cron: "42 14 * * *"  # Runs at morning 5 am everyday
 
 jobs:
   Runnning-retraining-stages:
