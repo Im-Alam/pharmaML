@@ -3,8 +3,8 @@ name: Pharma ML Pipeline
 on:
   push:
     branches: ['main']
-  schedule:
-    - cron: "0 9 * * *"  # Runs at morning 5 am everyday
+  # schedule:
+  #   - cron: "0 9 * * *"  # Runs at morning 5 am everyday
 
 jobs:
   Runnning-retraining-stages:
