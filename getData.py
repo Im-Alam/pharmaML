@@ -11,6 +11,8 @@ db_password = os.getenv('DB_PASSWORD')
 db_port = os.getenv('DB_PORT')
 
 # Connect to the database
+connection = False
+
 try:
     connection = psycopg2.connect(
         user=db_user,
@@ -34,6 +36,7 @@ try:
 
 except Exception as error:
     print(f"Error connecting to the database: {error}")
+    pass
     
 finally:
     if connection:

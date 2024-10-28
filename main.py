@@ -31,6 +31,10 @@ def load_supplier_scores(file_path: str) -> Dict[str, float]:
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Error decoding JSON file")
 
+@app.get("/")
+async def home_():
+    return "Welcome to Home Page"
+
 # Route to fetch supplier score
 @app.get("/supplier-score", response_class=JSONResponse)
 async def get_supplier_score():
