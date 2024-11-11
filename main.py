@@ -128,9 +128,7 @@ async def reorder_point():
 async def favicon():
     return {"message": "Favicon not found. Add a favicon.ico in the static folder."}
 
-host = os.getenv('host')
-port = os.getenv('port')
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8080)
+    uvicorn.run(app)
