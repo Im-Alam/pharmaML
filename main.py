@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 import json
 from typing import Dict
@@ -8,6 +8,7 @@ from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 from rop import reorderPoint
+import os
 
 load_dotenv(override=True)
 
@@ -42,6 +43,29 @@ async def get_supplier_score():
     if scores is None:
         raise HTTPException(status_code=404, detail="Supplier not found")
     return  scores
+
+
+
+
+
+@app.post('/webhook')
+async def webhook(request: Request):
+    # Parse the incoming form data
+    form_data = await request.form()
+    message_sid = form_data.get('MessageSid')
+    from_number = form_data.get('From')
+    to_number = form_data.get('To')
+    body = form_data.get('Body')
+
+    # Log the message details
+    print(f"Message Sid: {message_sid}")
+    print(f"From: {from_number}")
+    print(f"To: {to_number}")
+    print(f"Body: {body}")
+    print("-" * 20)
+
+    return '', 200
+
 
 
 
@@ -104,7 +128,9 @@ async def reorder_point():
 async def favicon():
     return {"message": "Favicon not found. Add a favicon.ico in the static folder."}
 
+host = os.getenv('host')
+port = os.getenv('port')
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8080)
